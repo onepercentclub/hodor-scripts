@@ -55,7 +55,6 @@ module.exports = (robot) ->
         # Execute a fabric command
         fabBranch = if branch then ":#{branch}" else ""
         exec "/bin/bash -c 'cd #{siteDir} && source env/bin/activate && fab deploy_#{env}#{fabBranch}'", (err, stdout, stderr) ->
-        #exec "/bin/bash -c 'cd #{siteDir} && source env/bin/activate && fab deploy_#{env}#{fabBranch}'", (err, stdout, stderr) ->
             if err
                 sendMsg msg, "Sorry, something has gone wrong. #{err}"
             else
