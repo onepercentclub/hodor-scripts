@@ -9,10 +9,11 @@
 deploySites =
     deploy: '/var/www/onepercentclub-site'
     bk_deploy: '/var/www/booking'
+    reef_deploy: '/var/www/reef'
 
 module.exports = (robot) ->
     # Deploy to staging
-    robot.respond /(deploy|bk_deploy) ([a-z|0-9]+)(\s+to\s+([a-z|0-9]+))?/i, (msg) ->
+    robot.respond /(deploy|bk_deploy|reef_deploy) ([a-z|0-9]+)(\s+to\s+([a-z|0-9]+))?/i, (msg) ->
         sendMsg msg, "Checking settings..."
 
         # Get site deploy directory
@@ -35,11 +36,12 @@ module.exports = (robot) ->
 
         # TODO: if staging then we should checkout the latest release branch
         #       if a commit provided then checkout the commit
+        git_clean = "git fetch origin && git reset --hard origin/HEAD && git clean -f"
         git_cmd = "git pull"
         if branch
             git_cmd = "git checkout #{branch}"
 
-        exec "cd #{siteDir} && echo `git fetch && git remote prune origin && git reset --hard && #{git_cmd} | grep now\ at`", (err, stdout, stderr) ->
+        exec "cd #{siteDir} && echo `#{git_clean} && #{git_cmd} | grep now\ at`", (err, stdout, stderr) ->
             if err
                 sendMsg msg, "Sorry, could not reset / pull branch. #{err}"
             else
